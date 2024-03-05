@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+late List<CameraDescription> cameras;
 // function to trigger build when the app is run
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
@@ -32,7 +35,7 @@ class HomeRoute extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: const Text('Click Me!'),
+              child: const Text('Simulator'),
               onPressed: () {
                 Navigator.pushNamed(context, '/second');
               },
@@ -57,35 +60,80 @@ class SecondRoute extends StatefulWidget {
 }
 
 class _SecondRouteState extends State<SecondRoute> {
+  late CameraController _cameraController;
 
   @override
-      void initState() {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
-        _setOrientation(ScreenOrientation.landscapeOnly);
-        super.initState();
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+    _setOrientation(ScreenOrientation.landscapeOnly);
+    super.initState();
+    _cameraController = CameraController(cameras[0], ResolutionPreset.max);
+    _cameraController.initialize().then((_) {
+      if (!mounted) {
+        return;
       }
-      @override
-      void dispose() {      
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top,SystemUiOverlay.bottom]);
-                _setOrientation(ScreenOrientation.rotating);
+      setState(() {});
+    }).catchError((Object e) {
+      if (e is CameraException) {
+        switch (e.code) {
+          case 'CameraAccessDenied':
+            print("access denied");
+            break;
+          default:
+            print(e.description);
+            break;
+        }
+      }
+    });
+  }
 
-        super.dispose(); 
-      }
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    _setOrientation(ScreenOrientation.rotating);
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Click Me Page"),
+        title: const Text("Camera Page"),
         backgroundColor: Colors.green,
       ), // AppBar
-      body: Center(), // Center
-    ); // Scaffold
+      body: Stack(children: [
+        Container(height: double.maxFinite, child: CameraPreview(_cameraController),)
+      ],)
+    );
   }
 }
 
-class ThirdRoute extends StatelessWidget {
+class ThirdRoute extends StatefulWidget {
   const ThirdRoute({super.key});
+
+  State<ThirdRoute> createState() => _ThirdRouteState();
+}
+
+class _ThirdRouteState extends State<ThirdRoute> {
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+    _setOrientation(ScreenOrientation.landscapeOnly);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    _setOrientation(ScreenOrientation.rotating);
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
