@@ -69,12 +69,15 @@ class _SecondRouteState extends State<SecondRoute>
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top]);
+    
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _setOrientation(ScreenOrientation.landscapeOnly);
     super.initState();
     _cameraController = CameraController(cameras[0], ResolutionPreset.max);
+    //final size = Size(1920, 1080);
     _cameraController.initialize().then((_) {
+      //_cameraController.value = _cameraController.value.copyWith(previewSize: size);
       if (!mounted) {
         return;
       }
@@ -120,6 +123,7 @@ class _SecondRouteState extends State<SecondRoute>
           //print(_visible);
         },
         child: Scaffold(
+          extendBodyBehindAppBar:true,
             appBar: SlidingAppBar(
                 controller: _controller,
                 visible: _visible,
@@ -127,22 +131,26 @@ class _SecondRouteState extends State<SecondRoute>
                   title: const Text("Camera Page"),
                   backgroundColor: Colors.green,
                 )),
-            body: Row(children: [
+            body: Expanded(
+            child:Row(children: [
               Flexible(
-                flex: 1,
+                flex: 10,
                 child:Container(
                 height: double.infinity,
                 child: CameraPreview(_cameraController),
                 
               )),
-              Flexible(
+              Spacer(
                 flex: 1,
+              ),
+              Flexible(
+                flex: 10,
                 child:Container(
                 height: double.infinity,
                 child: CameraPreview(_cameraController),
               )),
             ],
-            )));
+            ))));
   }
 }
 
