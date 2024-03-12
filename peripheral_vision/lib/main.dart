@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/animation.dart';
 
 late List<CameraDescription> cameras;
 // function to trigger build when the app is run
@@ -21,7 +22,7 @@ Future<void> main() async {
 }
 
 class HomeRoute extends StatelessWidget {
-  const HomeRoute({Key? key}) : super(key: key);
+  const HomeRoute({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +55,17 @@ class HomeRoute extends StatelessWidget {
 }
 
 class SecondRoute extends StatefulWidget {
-  const SecondRoute({Key? key}) : super(key: key);
+  const SecondRoute({super.key});
 
+  @override
   State<SecondRoute> createState() => _SecondRouteState();
 }
 
-class _SecondRouteState extends State<SecondRoute> {
+class _SecondRouteState extends State<SecondRoute>
+    with SingleTickerProviderStateMixin {
   late CameraController _cameraController;
+  bool _visible = true;
+  late final AnimationController _controller;
 
   @override
   void initState() {
@@ -86,6 +91,11 @@ class _SecondRouteState extends State<SecondRoute> {
         }
       }
     });
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
   }
 
   @override
@@ -99,15 +109,40 @@ class _SecondRouteState extends State<SecondRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Camera Page"),
-        backgroundColor: Colors.green,
-      ), // AppBar
-      body: Stack(children: [
-        Container(height: double.maxFinite, child: CameraPreview(_cameraController),)
-      ],)
-    );
+    return GestureDetector(
+        onTap: () {
+          print("TAP");
+          setState(() => _visible = !_visible);
+
+          if (_visible) {
+            print("Visible");
+          }
+          //print(_visible);
+        },
+        child: Scaffold(
+            appBar: SlidingAppBar(
+                controller: _controller,
+                visible: _visible,
+                child: AppBar(
+                  title: const Text("Camera Page"),
+                  backgroundColor: Colors.green,
+                )),
+            body: Row(children: [
+              Flexible(
+                flex: 1,
+                child:Container(
+                height: double.infinity,
+                child: CameraPreview(_cameraController),
+                
+              )),
+              Flexible(
+                flex: 1,
+                child:Container(
+                height: double.infinity,
+                child: CameraPreview(_cameraController),
+              )),
+            ],
+            )));
   }
 }
 
@@ -175,4 +210,31 @@ void _setOrientation(ScreenOrientation orientation) {
       break;
   }
   SystemChrome.setPreferredOrientations(orientations);
+}
+
+class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const SlidingAppBar({
+    super.key,
+    required this.child,
+    required this.controller,
+    required this.visible,
+  });
+
+  final PreferredSizeWidget child;
+  final AnimationController controller;
+  final bool visible;
+
+  @override
+  Size get preferredSize => child.preferredSize;
+
+  @override
+  Widget build(BuildContext context) {
+    visible ? controller.reverse() : controller.forward();
+    return SlideTransition(
+      position: Tween<Offset>(begin: Offset.zero, end: Offset(0, -1)).animate(
+        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn),
+      ),
+      child: child,
+    );
+  }
 }
