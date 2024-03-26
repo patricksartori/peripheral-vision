@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/animation.dart';
-import 'package:flutter/widgets.dart';
 
 late List<CameraDescription> cameras;
 // function to trigger build when the app is run
@@ -29,7 +24,7 @@ class HomeRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Geeks for Geeks'),
+        title: const Text('Peripheral Vision'),
         backgroundColor: Colors.green,
       ), // AppBar
       body: Center(
@@ -37,13 +32,13 @@ class HomeRoute extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: const Text('Simulator'),
+              child: const Text('Maculopathy Simulator'),
               onPressed: () {
                 Navigator.pushNamed(context, '/second');
               },
             ), // ElevatedButton
             ElevatedButton(
-              child: const Text('Tap Me!'),
+              child: const Text('Reading Mode'),
               onPressed: () {
                 Navigator.pushNamed(context, '/third');
               },
@@ -127,55 +122,50 @@ class _SecondRouteState extends State<SecondRoute>
                 controller: _controller,
                 visible: _visible,
                 child: AppBar(
-                  title: const Text("Camera Page"),
+                  title: const Text("Maculopathy Simulator"),
                   backgroundColor: Colors.green,
                 )),
             body: Container(
-                height: double.infinity,
-                child: Row(
-                  children: [
-                    Flexible(
-                      flex: 15,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            height: 300,
-                            width: 400,
-                            child: CameraPreview(_cameraController)),
-                      ),
-                      /*child: AspectRatio(
-                          aspectRatio: _cameraController.value.aspectRatio,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                                height: double.infinity,
-                                child: CameraPreview(_cameraController)),
-                          )),*/
+              height: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    flex: 15,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: 300,
+                          width: 400,
+                          child: CameraPreview(_cameraController),
+                        ),
+                        Image.asset(
+                          'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
+                          width: 200, // Larghezza dell'immagine per la prima preview
+                          height: 200, // Altezza dell'immagine per la prima preview
+                        ),
+                      ],
                     ),
-                    Spacer(
-                      flex: 1,
-                    ),
-                    Flexible(
-                      flex: 15,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            height: 300,
-                            width: 400,
-
-                            child: CameraPreview(_cameraController)),
-                      ),
-                      /*child: AspectRatio(
-                          aspectRatio: _cameraController.value.aspectRatio,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                                height: double.infinity,
-                                child: CameraPreview(_cameraController)),
-                          )),*/
-                    ),
-                  ],
-                ))));
+                  ),
+                  SizedBox(width: 10),
+                  Flexible(
+                    flex: 15,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: 300,
+                          width: 400,
+                          child: CameraPreview(_cameraController),
+                        ),
+                        Image.asset(
+                          'assets/black_blurred.png', // Percorso dell'immagine per la seconda preview
+                          width: 200, // Larghezza dell'immagine per la seconda preview
+                          height: 200, // Altezza dell'immagine per la seconda preview
+                        ),
+                      ]))
+                ]))));
   }
 }
 
@@ -255,7 +245,7 @@ class _ThirdRouteState extends State<ThirdRoute>
                 controller: _controller,
                 visible: _visible,
                 child: AppBar(
-                  title: const Text("Camera Page"),
+                  title: const Text("Reading Mode"),
                   backgroundColor: Colors.green,
                 )),
             body: Expanded(
