@@ -130,27 +130,52 @@ class _SecondRouteState extends State<SecondRoute>
                   title: const Text("Camera Page"),
                   backgroundColor: Colors.green,
                 )),
-            body: Expanded(
+            body: Container(
+                height: double.infinity,
                 child: Row(
-              children: [
-                Flexible(
-                    flex: 10,
-                    child: AspectRatio(
-                      aspectRatio: _cameraController.value.aspectRatio,
-                      child: CameraPreview(_cameraController),
-                    )),
-                Spacer(
-                  flex: 1,
-                ),
-                Flexible(
-                  flex: 10,
-                  child: AspectRatio(
-                    aspectRatio: _cameraController.value.aspectRatio,
-                    child: CameraPreview(_cameraController),
-                  ),
-                ),
-              ],
-            ))));
+                  children: [
+                    Flexible(
+                      flex: 15,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            height: 300,
+                            width: 400,
+                            child: CameraPreview(_cameraController)),
+                      ),
+                      /*child: AspectRatio(
+                          aspectRatio: _cameraController.value.aspectRatio,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                                height: double.infinity,
+                                child: CameraPreview(_cameraController)),
+                          )),*/
+                    ),
+                    Spacer(
+                      flex: 1,
+                    ),
+                    Flexible(
+                      flex: 15,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            height: 300,
+                            width: 400,
+
+                            child: CameraPreview(_cameraController)),
+                      ),
+                      /*child: AspectRatio(
+                          aspectRatio: _cameraController.value.aspectRatio,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                                height: double.infinity,
+                                child: CameraPreview(_cameraController)),
+                          )),*/
+                    ),
+                  ],
+                ))));
   }
 }
 
@@ -246,11 +271,11 @@ class _ThirdRouteState extends State<ThirdRoute>
                             child: CameraPreview(_cameraController),
                           )),
                       Flexible(
-                    flex: 1,
-                    child: AspectRatio(
-                      aspectRatio:  _cameraController.value.aspectRatio,
-                    child: CameraPreview(_cameraController),
-                    )),
+                          flex: 1,
+                          child: AspectRatio(
+                            aspectRatio: _cameraController.value.aspectRatio,
+                            child: CameraPreview(_cameraController),
+                          )),
                     ])),
                 Spacer(
                   flex: 1,
@@ -261,15 +286,17 @@ class _ThirdRouteState extends State<ThirdRoute>
                       Flexible(
                           flex: 2,
                           child: AspectRatio(
+                              aspectRatio: _cameraController.value.aspectRatio,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: CameraPreview(_cameraController),
+                              ))),
+                      Flexible(
+                          flex: 1,
+                          child: AspectRatio(
                             aspectRatio: _cameraController.value.aspectRatio,
                             child: CameraPreview(_cameraController),
                           )),
-Flexible(
-                    flex: 1,
-                    child: AspectRatio(
-                      aspectRatio:  _cameraController.value.aspectRatio,
-                    child: CameraPreview(_cameraController),
-                    )),
                     ])),
               ],
             ))));
