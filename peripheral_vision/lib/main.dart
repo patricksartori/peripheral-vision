@@ -1,10 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/widgets.dart';
 
 late List<CameraDescription> cameras;
@@ -16,8 +13,9 @@ Future<void> main() async {
     initialRoute: '/',
     routes: {
       '/': (context) => const HomeRoute(),
-      '/second': (context) => const SecondRoute(),
-      '/third': (context) => const ThirdRoute(),
+      '/simulator': (context) => const MaculopathySimulator(),
+      '/reading_mode': (context) => const ReadingMode(),
+      '/simulator_menu':(context) => const MaculopathySimulatorMenu(),
     },
   )); //MaterialApp
 }
@@ -29,7 +27,7 @@ class HomeRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Geeks for Geeks'),
+        title: const Text('Peripheral Vision'),
         backgroundColor: Colors.green,
       ), // AppBar
       body: Center(
@@ -37,15 +35,15 @@ class HomeRoute extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: const Text('Simulator'),
+              child: const Text('Maculopathy Simulator'),
               onPressed: () {
-                Navigator.pushNamed(context, '/second');
+                Navigator.pushNamed(context, '/simulator_menu');
               },
             ), // ElevatedButton
             ElevatedButton(
-              child: const Text('Tap Me!'),
+              child: const Text('Reading Mode'),
               onPressed: () {
-                Navigator.pushNamed(context, '/third');
+                Navigator.pushNamed(context, '/reading_mode');
               },
             ), // ElevatedButton
           ], // <Widget>[]
@@ -55,14 +53,14 @@ class HomeRoute extends StatelessWidget {
   }
 }
 
-class SecondRoute extends StatefulWidget {
-  const SecondRoute({super.key});
+class MaculopathySimulator extends StatefulWidget {
+  const MaculopathySimulator({super.key});
 
   @override
-  State<SecondRoute> createState() => _SecondRouteState();
+  State<MaculopathySimulator> createState() => _MaculopathySimulator();
 }
 
-class _SecondRouteState extends State<SecondRoute>
+class _MaculopathySimulator extends State<MaculopathySimulator>
     with SingleTickerProviderStateMixin {
   late CameraController _cameraController;
   bool _visible = true;
@@ -111,6 +109,7 @@ class _SecondRouteState extends State<SecondRoute>
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as FromMenuToSimulation;
     return GestureDetector(
         onTap: () {
           print("TAP");
@@ -127,65 +126,68 @@ class _SecondRouteState extends State<SecondRoute>
                 controller: _controller,
                 visible: _visible,
                 child: AppBar(
-                  title: const Text("Camera Page"),
+                  title: const Text("Maculopathy Simulator"),
                   backgroundColor: Colors.green,
                 )),
             body: Container(
-                height: double.infinity,
-                child: Row(
-                  children: [
-                    Flexible(
-                      flex: 15,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            height: 300,
-                            width: 400,
-                            child: CameraPreview(_cameraController)),
-                      ),
-                      /*child: AspectRatio(
-                          aspectRatio: _cameraController.value.aspectRatio,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                                height: double.infinity,
-                                child: CameraPreview(_cameraController)),
-                          )),*/
+              height: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    flex: 15,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: 300,
+                          width: 400,
+                          child: CameraPreview(_cameraController),
+                        ),
+                        Opacity(
+                          opacity: args.opacity/100,
+                          child:
+                          Image.asset(
+                            'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
+                            width: args.resolution, // Larghezza dell'immagine per la prima preview
+                            height: args.resolution // Altezza dell'immagine per la prima preview
+                          )
+                        ),
+                      ],
                     ),
-                    Spacer(
-                      flex: 1,
-                    ),
-                    Flexible(
-                      flex: 15,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            height: 300,
-                            width: 400,
-
-                            child: CameraPreview(_cameraController)),
-                      ),
-                      /*child: AspectRatio(
-                          aspectRatio: _cameraController.value.aspectRatio,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                                height: double.infinity,
-                                child: CameraPreview(_cameraController)),
-                          )),*/
-                    ),
-                  ],
-                ))));
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    flex: 15,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: 300,
+                          width: 400,
+                          child: CameraPreview(_cameraController),
+                        ),
+                        Opacity(
+                          opacity: args.opacity/100,
+                          child:
+                          Image.asset(
+                            'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
+                            width: args.resolution, // Larghezza dell'immagine per la prima preview
+                            height: args.resolution // Altezza dell'immagine per la prima preview
+                          )
+                        ),
+                      ]))
+                ]))));
   }
 }
 
-class ThirdRoute extends StatefulWidget {
-  const ThirdRoute({super.key});
+class ReadingMode extends StatefulWidget {
+  const ReadingMode({super.key});
 
-  State<ThirdRoute> createState() => _ThirdRouteState();
+  State<ReadingMode> createState() => _ReadingModeState();
 }
 
-class _ThirdRouteState extends State<ThirdRoute>
+class _ReadingModeState extends State<ReadingMode>
     with SingleTickerProviderStateMixin {
   late CameraController _cameraController;
   late CameraController _bottomCameraController;
@@ -255,7 +257,7 @@ class _ThirdRouteState extends State<ThirdRoute>
                 controller: _controller,
                 visible: _visible,
                 child: AppBar(
-                  title: const Text("Camera Page"),
+                  title: const Text("Reading Mode"),
                   backgroundColor: Colors.green,
                 )),
             body: Expanded(
@@ -300,6 +302,127 @@ class _ThirdRouteState extends State<ThirdRoute>
                     ])),
               ],
             ))));
+  }
+}
+
+class MaculopathySimulatorMenu extends StatefulWidget {
+  const MaculopathySimulatorMenu({super.key});
+
+  @override
+  State<MaculopathySimulatorMenu> createState() => _MaculopathySimulatorMenuState();
+}
+
+class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
+    with SingleTickerProviderStateMixin {
+  bool _visible = true;
+  double _resolutionValue = 0.0;
+  double _opacityValue = 100.0;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    _setOrientation(ScreenOrientation.portraitOnly);
+    super.initState();
+    setState(() {});
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+  }
+
+  @override
+  Widget build(BuildContext buildContext) {
+    return GestureDetector(
+        onTap: () {
+          print("TAP");
+          setState(() => _visible = !_visible);
+
+          if (_visible) {
+            print("Visible");
+          }
+          //print(_visible);
+        },
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: SlidingAppBar(
+            controller: _controller,
+            visible: _visible,
+            child: AppBar(
+              title: const Text("Maculopathy Simulator Menu"),
+              backgroundColor: Colors.green,
+            )),
+            body: Center(
+              child: Container(
+                //margin: const EdgeInsets.all(100.0),
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  /*const Text("Stain shape"),
+                  ElevatedButton(
+                    child: const Text("Choose stain shape"),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Popup Window"),
+                            content: Text("This is a popup window"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Close"),
+                              )
+                            ],
+                          );
+                        }
+                      );
+                    },
+                  ),*/
+                   Container(
+                    margin: const EdgeInsets.only(top: 50.0),
+                    child: Text('Stain Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px')),
+                  Slider(
+                    value: _resolutionValue,
+                    min: 0.0,
+                    max: 300.0,
+                    onChanged: (value) {
+                      setState(() {
+                        _resolutionValue = value;
+                      });
+                    },
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 50.0),
+                    child: Text('Opacity: ${_opacityValue.toInt()}%')),
+                  Slider(
+                    value: _opacityValue,
+                    min: 0.0,
+                    max: 100.0,
+
+                    onChanged: (value) {
+                      setState(() {
+                        _opacityValue = value;
+                      });
+                    },
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 50.0),
+                    child: ElevatedButton(
+                    child: const Text("Start Simulation"),
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context, 
+                        '/simulator', 
+                        arguments: FromMenuToSimulation(_resolutionValue, _opacityValue)
+                      );
+                     }
+                  ))
+                ],
+              ),
+              ))));
   }
 }
 
@@ -359,4 +482,11 @@ class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: child,
     );
   }
+}
+
+class FromMenuToSimulation {
+  final double resolution;
+  final double opacity;
+
+  FromMenuToSimulation(this.resolution, this.opacity);
 }
