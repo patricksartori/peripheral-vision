@@ -144,16 +144,19 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
                           width: 400,
                           child: CameraPreview(_cameraController),
                         ),
-                        Image.asset(
-                          'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
-                          width: args.width, // Larghezza dell'immagine per la prima preview
-                          height: args.height, // Altezza dell'immagine per la prima preview
-                          opacity: _controller
+                        Opacity(
+                          opacity: args.opacity/100,
+                          child:
+                          Image.asset(
+                            'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
+                            width: args.resolution, // Larghezza dell'immagine per la prima preview
+                            height: args.resolution // Altezza dell'immagine per la prima preview
+                          )
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Flexible(
                     flex: 15,
                     child: Stack(
@@ -164,10 +167,14 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
                           width: 400,
                           child: CameraPreview(_cameraController),
                         ),
-                        Image.asset(
-                          'assets/black_blurred.png', // Percorso dell'immagine per la seconda preview
-                          width: args.width, // Larghezza dell'immagine per la seconda preview
-                          height: args.height, // Altezza dell'immagine per la seconda preview
+                        Opacity(
+                          opacity: args.opacity/100,
+                          child:
+                          Image.asset(
+                            'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
+                            width: args.resolution, // Larghezza dell'immagine per la prima preview
+                            height: args.resolution // Altezza dell'immagine per la prima preview
+                          )
                         ),
                       ]))
                 ]))));
@@ -308,9 +315,8 @@ class MaculopathySimulatorMenu extends StatefulWidget {
 class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
     with SingleTickerProviderStateMixin {
   bool _visible = true;
-  int _heightValue = 0;
-  int _widthValue = 0;
-  double _sliderValue = 0.0;
+  double _resolutionValue = 0.0;
+  double _opacityValue = 100.0;
   late final AnimationController _controller;
 
   @override
@@ -348,7 +354,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
             )),
             body: Center(
               child: Container(
-                margin: const EdgeInsets.all(100.0),
+                //margin: const EdgeInsets.all(100.0),
                 child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -377,62 +383,28 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                   ),*/
                    Container(
                     margin: const EdgeInsets.only(top: 50.0),
-                    child: Text("Stain Size")),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Text("Height"),
-                        Expanded(
-                          child: Container(
-                          margin: const EdgeInsets.only(
-                            left: 20.0,
-                            right: 60.0,
-                          ),
-                          child: TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                _heightValue = int.tryParse(value) ?? 0;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                              hintText: "Enter height"
-                            ),
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                          ),
-                        )),
-
-                        const Text("Width"),
-                        Expanded(
-                          child: Container(
-                          margin: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                _widthValue = int.tryParse(value) ?? 0;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                              hintText: "Enter Width"
-                            ),
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                          ),
-                        ))
-                      ],
-                    ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 50.0),
-                    child: Text('Trasparency ${_sliderValue.toInt()}%')),
+                    child: Text('Stain Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px')),
                   Slider(
-                    value: _sliderValue,
+                    value: _resolutionValue,
                     min: 0.0,
-                    max: 100.0,
+                    max: 300.0,
                     onChanged: (value) {
                       setState(() {
-                        _sliderValue = value;
+                        _resolutionValue = value;
+                      });
+                    },
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 50.0),
+                    child: Text('Opacity: ${_opacityValue.toInt()}%')),
+                  Slider(
+                    value: _opacityValue,
+                    min: 0.0,
+                    max: 100.0,
+
+                    onChanged: (value) {
+                      setState(() {
+                        _opacityValue = value;
                       });
                     },
                   ),
@@ -440,13 +412,13 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                     margin: EdgeInsets.only(top: 50.0),
                     child: ElevatedButton(
                     child: const Text("Start Simulation"),
-                    onPressed: (_widthValue!=0 && _heightValue!= 0) ? () {
+                    onPressed: () {
                       Navigator.pushNamed(
                         context, 
                         '/simulator', 
-                        arguments: FromMenuToSimulation(_widthValue.toDouble(), _heightValue.toDouble(), _sliderValue)
+                        arguments: FromMenuToSimulation(_resolutionValue, _opacityValue)
                       );
-                     } : null
+                     }
                   ))
                 ],
               ),
@@ -513,9 +485,8 @@ class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class FromMenuToSimulation {
-  final double width;
-  final double height;
-  final double trasparency;
+  final double resolution;
+  final double opacity;
 
-  FromMenuToSimulation(this.width, this.height, this.trasparency);
+  FromMenuToSimulation(this.resolution, this.opacity);
 }
