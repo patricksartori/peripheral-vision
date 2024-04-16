@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 late List<CameraDescription> cameras;
 // function to trigger build when the app is run
@@ -11,8 +13,9 @@ Future<void> main() async {
     initialRoute: '/',
     routes: {
       '/': (context) => const HomeRoute(),
-      '/second': (context) => const SecondRoute(),
-      '/third': (context) => const ThirdRoute(),
+      '/simulator': (context) => const MaculopathySimulator(),
+      '/reading_mode': (context) => const ReadingMode(),
+      '/simulator_menu':(context) => const MaculopathySimulatorMenu(),
     },
   )); //MaterialApp
 }
@@ -34,13 +37,13 @@ class HomeRoute extends StatelessWidget {
             ElevatedButton(
               child: const Text('Maculopathy Simulator'),
               onPressed: () {
-                Navigator.pushNamed(context, '/second');
+                Navigator.pushNamed(context, '/simulator_menu');
               },
             ), // ElevatedButton
             ElevatedButton(
               child: const Text('Reading Mode'),
               onPressed: () {
-                Navigator.pushNamed(context, '/third');
+                Navigator.pushNamed(context, '/reading_mode');
               },
             ), // ElevatedButton
           ], // <Widget>[]
@@ -50,14 +53,14 @@ class HomeRoute extends StatelessWidget {
   }
 }
 
-class SecondRoute extends StatefulWidget {
-  const SecondRoute({super.key});
+class MaculopathySimulator extends StatefulWidget {
+  const MaculopathySimulator({super.key});
 
   @override
-  State<SecondRoute> createState() => _SecondRouteState();
+  State<MaculopathySimulator> createState() => _MaculopathySimulator();
 }
 
-class _SecondRouteState extends State<SecondRoute>
+class _MaculopathySimulator extends State<MaculopathySimulator>
     with SingleTickerProviderStateMixin {
   late CameraController _cameraController;
   bool _visible = true;
@@ -106,6 +109,7 @@ class _SecondRouteState extends State<SecondRoute>
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as FromMenuToSimulation;
     return GestureDetector(
         onTap: () {
           print("TAP");
@@ -142,8 +146,9 @@ class _SecondRouteState extends State<SecondRoute>
                         ),
                         Image.asset(
                           'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
-                          width: 200, // Larghezza dell'immagine per la prima preview
-                          height: 200, // Altezza dell'immagine per la prima preview
+                          width: args.width, // Larghezza dell'immagine per la prima preview
+                          height: args.height, // Altezza dell'immagine per la prima preview
+                          opacity: _controller
                         ),
                       ],
                     ),
@@ -161,21 +166,21 @@ class _SecondRouteState extends State<SecondRoute>
                         ),
                         Image.asset(
                           'assets/black_blurred.png', // Percorso dell'immagine per la seconda preview
-                          width: 200, // Larghezza dell'immagine per la seconda preview
-                          height: 200, // Altezza dell'immagine per la seconda preview
+                          width: args.width, // Larghezza dell'immagine per la seconda preview
+                          height: args.height, // Altezza dell'immagine per la seconda preview
                         ),
                       ]))
                 ]))));
   }
 }
 
-class ThirdRoute extends StatefulWidget {
-  const ThirdRoute({super.key});
+class ReadingMode extends StatefulWidget {
+  const ReadingMode({super.key});
 
-  State<ThirdRoute> createState() => _ThirdRouteState();
+  State<ReadingMode> createState() => _ReadingModeState();
 }
 
-class _ThirdRouteState extends State<ThirdRoute>
+class _ReadingModeState extends State<ReadingMode>
     with SingleTickerProviderStateMixin {
   late CameraController _cameraController;
   late CameraController _bottomCameraController;
@@ -293,6 +298,162 @@ class _ThirdRouteState extends State<ThirdRoute>
   }
 }
 
+class MaculopathySimulatorMenu extends StatefulWidget {
+  const MaculopathySimulatorMenu({super.key});
+
+  @override
+  State<MaculopathySimulatorMenu> createState() => _MaculopathySimulatorMenuState();
+}
+
+class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
+    with SingleTickerProviderStateMixin {
+  bool _visible = true;
+  int _heightValue = 0;
+  int _widthValue = 0;
+  double _sliderValue = 0.0;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    _setOrientation(ScreenOrientation.portraitOnly);
+    super.initState();
+    setState(() {});
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+  }
+
+  @override
+  Widget build(BuildContext buildContext) {
+    return GestureDetector(
+        onTap: () {
+          print("TAP");
+          setState(() => _visible = !_visible);
+
+          if (_visible) {
+            print("Visible");
+          }
+          //print(_visible);
+        },
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: SlidingAppBar(
+            controller: _controller,
+            visible: _visible,
+            child: AppBar(
+              title: const Text("Maculopathy Simulator Menu"),
+              backgroundColor: Colors.green,
+            )),
+            body: Center(
+              child: Container(
+                margin: const EdgeInsets.all(100.0),
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  /*const Text("Stain shape"),
+                  ElevatedButton(
+                    child: const Text("Choose stain shape"),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Popup Window"),
+                            content: Text("This is a popup window"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Close"),
+                              )
+                            ],
+                          );
+                        }
+                      );
+                    },
+                  ),*/
+                   Container(
+                    margin: const EdgeInsets.only(top: 50.0),
+                    child: Text("Stain Size")),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text("Height"),
+                        Expanded(
+                          child: Container(
+                          margin: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 60.0,
+                          ),
+                          child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                _heightValue = int.tryParse(value) ?? 0;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: "Enter height"
+                            ),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                          ),
+                        )),
+
+                        const Text("Width"),
+                        Expanded(
+                          child: Container(
+                          margin: const EdgeInsets.only(left: 20.0),
+                          child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                _widthValue = int.tryParse(value) ?? 0;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: "Enter Width"
+                            ),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 50.0),
+                    child: Text('Trasparency ${_sliderValue.toInt()}%')),
+                  Slider(
+                    value: _sliderValue,
+                    min: 0.0,
+                    max: 100.0,
+                    onChanged: (value) {
+                      setState(() {
+                        _sliderValue = value;
+                      });
+                    },
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 50.0),
+                    child: ElevatedButton(
+                    child: const Text("Start Simulation"),
+                    onPressed: (_widthValue!=0 && _heightValue!= 0) ? () {
+                      Navigator.pushNamed(
+                        context, 
+                        '/simulator', 
+                        arguments: FromMenuToSimulation(_widthValue.toDouble(), _heightValue.toDouble(), _sliderValue)
+                      );
+                     } : null
+                  ))
+                ],
+              ),
+              ))));
+  }
+}
+
 enum ScreenOrientation {
   portraitOnly,
   landscapeOnly,
@@ -349,4 +510,12 @@ class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: child,
     );
   }
+}
+
+class FromMenuToSimulation {
+  final double width;
+  final double height;
+  final double trasparency;
+
+  FromMenuToSimulation(this.width, this.height, this.trasparency);
 }
