@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -190,7 +191,6 @@ class ReadingMode extends StatefulWidget {
 class _ReadingModeState extends State<ReadingMode>
     with SingleTickerProviderStateMixin {
   late CameraController _cameraController;
-  late CameraController _bottomCameraController;
 
   bool _visible = true;
   late final AnimationController _controller;
@@ -202,10 +202,8 @@ class _ReadingModeState extends State<ReadingMode>
     _setOrientation(ScreenOrientation.landscapeOnly);
     super.initState();
     _cameraController = CameraController(cameras[0], ResolutionPreset.max);
-    _bottomCameraController =
         CameraController(cameras[0], ResolutionPreset.max);
     _cameraController.initialize().then((_) {
-      _bottomCameraController.value =
           _cameraController.value.copyWith(previewSize: size);
       if (!mounted) {
         return;
@@ -262,43 +260,54 @@ class _ReadingModeState extends State<ReadingMode>
                 )),
             body: Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
-                    flex: 10,
-                    child: Column(children: [
-                      Flexible(
-                          flex: 2,
-                          child: AspectRatio(
-                            aspectRatio: _cameraController.value.aspectRatio,
-                            child: CameraPreview(_cameraController),
-                          )),
-                      Flexible(
-                          flex: 1,
-                          child: AspectRatio(
-                            aspectRatio: _cameraController.value.aspectRatio,
-                            child: CameraPreview(_cameraController),
-                          )),
-                    ])),
-                Spacer(
-                  flex: 1,
-                ),
-                Flexible(
-                    flex: 10,
-                    child: Column(children: [
-                      Flexible(
-                          flex: 2,
-                          child: AspectRatio(
-                              aspectRatio: _cameraController.value.aspectRatio,
+                    flex: 15,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                      Container(
+                          height: 195,
+                          width: 400,
+                          child: CameraPreview(_cameraController),
+                              ),
+                      Container(
+                            width: 400,                            
+                            child: ClipRect(  
                               child: Align(
+                                heightFactor: 0.35,
                                 alignment: Alignment.center,
                                 child: CameraPreview(_cameraController),
-                              ))),
-                      Flexible(
-                          flex: 1,
-                          child: AspectRatio(
-                            aspectRatio: _cameraController.value.aspectRatio,
-                            child: CameraPreview(_cameraController),
-                          )),
+                              ),
+                          ))]),
+                    ])),
+                const SizedBox(width: 10),
+                Flexible(
+                    flex: 15,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                      Container(
+                          height: 195,
+                          width: 400,
+                          child: CameraPreview(_cameraController),
+                              ),
+                      Container(
+                            width: 400,                            
+                            child: ClipRect(  
+                              child: Align(
+                                heightFactor: 0.35,
+                                alignment: Alignment.center,
+                                child: CameraPreview(_cameraController),
+                              ),
+                          ))]),
                     ])),
               ],
             ))));
