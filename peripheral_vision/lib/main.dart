@@ -96,8 +96,7 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _setOrientation(ScreenOrientation.portraitOnly);
     _cameraController.dispose();
     super.dispose();
@@ -126,7 +125,7 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
             backgroundColor: Colors.green,
           )
         ),
-        body: Container(
+        body: SizedBox(
           height: double.infinity,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center, 
@@ -136,7 +135,7 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 300,
                       width: 400,
                       child: CameraPreview(_cameraController),
@@ -158,7 +157,7 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
                 child: Stack(
                   alignment: Alignment.center, 
                   children: [
-                    Container(
+                    SizedBox(
                       height: 300,
                       width: 400,
                       child: CameraPreview(_cameraController),
@@ -184,6 +183,7 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
 class ReadingMode extends StatefulWidget {
   const ReadingMode({super.key});
 
+  @override
   State<ReadingMode> createState() => _ReadingModeState();
 }
 
@@ -193,7 +193,7 @@ class _ReadingModeState extends State<ReadingMode>
 
   bool _visible = true;
   late final AnimationController _controller;
-  final size = Size(1920, 1080);
+  final size = const Size(1920, 1080);
 
   @override
   void initState() {
@@ -230,7 +230,7 @@ class _ReadingModeState extends State<ReadingMode>
   @override
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+        overlays: []);
     _setOrientation(ScreenOrientation.rotating);
     super.dispose();
     _cameraController.dispose();
@@ -269,12 +269,12 @@ class _ReadingModeState extends State<ReadingMode>
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 195,
                           width: 400,
                           child: CameraPreview(_cameraController),
                         ),
-                        Container(
+                        SizedBox(
                           width: 400,
                           child: ClipRect(
                             child: Align(
@@ -298,12 +298,12 @@ class _ReadingModeState extends State<ReadingMode>
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 195,
                           width: 400,
                           child: CameraPreview(_cameraController),
                         ),
-                        Container(
+                        SizedBox(
                           width: 400,
                           child: ClipRect(
                             child: Align(
@@ -356,6 +356,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _setOrientation(ScreenOrientation.rotating);
     super.dispose();
   }
@@ -382,17 +383,17 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
           )
         ),
         body: Center(
-          child: Container(
+          child: SizedBox(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
                   margin: const EdgeInsets.only(top: 80.0),
-                  child: Text("Scotoma shape:"),
+                  child: const Text("Scotoma shape:"),
                 ),
                 Expanded(
                   child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4, childAspectRatio: 1.0),
                     itemCount: 24,
                     itemBuilder: (BuildContext context, int index) {
@@ -455,7 +456,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                   },
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 50.0, bottom: 50.0),
+                  margin: const EdgeInsets.only(top: 50.0, bottom: 50.0),
                   child: ElevatedButton(
                     child: const Text("Start Simulation"),
                     onPressed: () {
@@ -528,7 +529,7 @@ class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     visible ? controller.reverse() : controller.forward();
     return SlideTransition(
-      position: Tween<Offset>(begin: Offset.zero, end: Offset(0, -1)).animate(
+      position: Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1)).animate(
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn),
       ),
       child: child,
