@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 late List<CameraDescription> cameras;
 // function to trigger build when the app is run
@@ -16,9 +13,9 @@ Future<void> main() async {
       '/': (context) => const HomeRoute(),
       '/simulator': (context) => const MaculopathySimulator(),
       '/reading_mode': (context) => const ReadingMode(),
-      '/simulator_menu':(context) => const MaculopathySimulatorMenu(),
+      '/simulator_menu': (context) => const MaculopathySimulatorMenu(),
     },
-  )); //MaterialApp
+  ));
 }
 
 class HomeRoute extends StatelessWidget {
@@ -30,7 +27,7 @@ class HomeRoute extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Peripheral Vision'),
         backgroundColor: Colors.green,
-      ), // AppBar
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,17 +37,17 @@ class HomeRoute extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/simulator_menu');
               },
-            ), // ElevatedButton
+            ),
             ElevatedButton(
               child: const Text('Reading Mode'),
               onPressed: () {
                 Navigator.pushNamed(context, '/reading_mode');
               },
-            ), // ElevatedButton
-          ], // <Widget>[]
-        ), // Column
-      ), // Center
-    ); // Scaffold
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -73,9 +70,7 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
     _setOrientation(ScreenOrientation.landscapeOnly);
     super.initState();
     _cameraController = CameraController(cameras[0], ResolutionPreset.max);
-    //final size = Size(1920, 1080);
     _cameraController.initialize().then((_) {
-      //_cameraController.value = _cameraController.value.copyWith(previewSize: size);
       if (!mounted) {
         return;
       }
@@ -110,75 +105,79 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as FromMenuToSimulation;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as FromMenuToSimulation;
     return GestureDetector(
-        onTap: () {
-          print("TAP");
-          setState(() => _visible = !_visible);
+      onTap: () {
+        print("TAP");
+        setState(() => _visible = !_visible);
 
-          if (_visible) {
-            print("Visible");
-          }
-          //print(_visible);
-        },
-        child: Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: SlidingAppBar(
-                controller: _controller,
-                visible: _visible,
-                child: AppBar(
-                  title: const Text("Maculopathy Simulator"),
-                  backgroundColor: Colors.green,
-                )),
-            body: Container(
-              height: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    flex: 15,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          height: 300,
-                          width: 400,
-                          child: CameraPreview(_cameraController),
-                        ),
-                        Opacity(
-                          opacity: args.opacity/100,
-                          child:
-                          Image.asset(
-                            args.imageUrl,
-                            width: args.resolution,
-                            height: args.resolution 
-                          )
-                        ),
-                      ],
+        if (_visible) {
+          print("Visible");
+        }
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: SlidingAppBar(
+          controller: _controller,
+          visible: _visible,
+          child: AppBar(
+            title: const Text("Maculopathy Simulator"),
+            backgroundColor: Colors.green,
+          )
+        ),
+        body: Container(
+          height: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center, 
+            children: [
+              Flexible(
+                flex: 15,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      height: 300,
+                      width: 400,
+                      child: CameraPreview(_cameraController),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    flex: 15,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          height: 300,
-                          width: 400,
-                          child: CameraPreview(_cameraController),
-                        ),
-                        Opacity(
-                          opacity: args.opacity/100,
-                          child:
-                          Image.asset(
-                            args.imageUrl,
-                            width: args.resolution,
-                            height: args.resolution
-                          )
-                        ),
-                      ]))
-                ]))));
+                    Opacity(
+                      opacity: args.opacity / 100,
+                      child: Image.asset(
+                        args.imageUrl,
+                        width: args.resolution,
+                        height: args.resolution
+                      )
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                flex: 15,
+                child: Stack(
+                  alignment: Alignment.center, 
+                  children: [
+                    Container(
+                      height: 300,
+                      width: 400,
+                      child: CameraPreview(_cameraController),
+                    ),
+                    Opacity(
+                      opacity: args.opacity / 100,
+                      child: Image.asset(args.imageUrl,
+                        width: args.resolution,
+                        height: args.resolution
+                      )
+                    ),
+                  ]
+                )
+              )
+            ]
+          )
+        )
+      )
+    );
   }
 }
 
@@ -202,9 +201,9 @@ class _ReadingModeState extends State<ReadingMode>
     _setOrientation(ScreenOrientation.landscapeOnly);
     super.initState();
     _cameraController = CameraController(cameras[0], ResolutionPreset.max);
-        CameraController(cameras[0], ResolutionPreset.max);
+    CameraController(cameras[0], ResolutionPreset.max);
     _cameraController.initialize().then((_) {
-          _cameraController.value.copyWith(previewSize: size);
+      _cameraController.value.copyWith(previewSize: size);
       if (!mounted) {
         return;
       }
@@ -240,77 +239,90 @@ class _ReadingModeState extends State<ReadingMode>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          print("TAP");
-          setState(() => _visible = !_visible);
+      onTap: () {
+        print("TAP");
+        setState(() => _visible = !_visible);
 
-          if (_visible) {
-            print("Visible");
-          }
-          //print(_visible);
-        },
-        child: Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: SlidingAppBar(
-                controller: _controller,
-                visible: _visible,
-                child: AppBar(
-                  title: const Text("Reading Mode"),
-                  backgroundColor: Colors.green,
-                )),
-            body: Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                    flex: 15,
-                    child: Stack(
-                      alignment: Alignment.center,
+        if (_visible) {
+          print("Visible");
+        }
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: SlidingAppBar(
+          controller: _controller,
+          visible: _visible,
+          child: AppBar(
+            title: const Text("Reading Mode"),
+            backgroundColor: Colors.green,
+          )
+        ),
+        body: Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 15,
+                child: Stack(
+                  alignment: Alignment.center, 
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                      Container(
+                        Container(
                           height: 195,
                           width: 400,
                           child: CameraPreview(_cameraController),
-                              ),
-                      Container(
-                            width: 400,                            
-                            child: ClipRect(  
-                              child: Align(
-                                heightFactor: 0.35,
-                                alignment: Alignment.center,
-                                child: CameraPreview(_cameraController),
-                              ),
-                          ))]),
-                    ])),
-                const SizedBox(width: 10),
-                Flexible(
-                    flex: 15,
-                    child: Stack(
-                      alignment: Alignment.center,
+                        ),
+                        Container(
+                          width: 400,
+                          child: ClipRect(
+                            child: Align(
+                              heightFactor: 0.35,
+                              alignment: Alignment.center,
+                              child: CameraPreview(_cameraController),
+                            ),
+                          )
+                        )
+                      ]
+                    ),
+                  ]
+                )
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                flex: 15,
+                child: Stack(
+                  alignment: Alignment.center, 
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                      Container(
+                        Container(
                           height: 195,
                           width: 400,
                           child: CameraPreview(_cameraController),
-                              ),
-                      Container(
-                            width: 400,                            
-                            child: ClipRect(  
-                              child: Align(
-                                heightFactor: 0.35,
-                                alignment: Alignment.center,
-                                child: CameraPreview(_cameraController),
-                              ),
-                          ))]),
-                    ])),
-              ],
-            ))));
+                        ),
+                        Container(
+                          width: 400,
+                          child: ClipRect(
+                            child: Align(
+                              heightFactor: 0.35,
+                              alignment: Alignment.center,
+                              child: CameraPreview(_cameraController),
+                            )
+                          )
+                        )
+                      ]
+                    )
+                  ]
+                )
+              )
+            ]
+          )
+        )
+      )
+    );
   }
 }
 
@@ -318,7 +330,8 @@ class MaculopathySimulatorMenu extends StatefulWidget {
   const MaculopathySimulatorMenu({super.key});
 
   @override
-  State<MaculopathySimulatorMenu> createState() => _MaculopathySimulatorMenuState();
+  State<MaculopathySimulatorMenu> createState() =>
+      _MaculopathySimulatorMenuState();
 }
 
 class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
@@ -350,40 +363,37 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
   @override
   Widget build(BuildContext buildContext) {
     return GestureDetector(
-        onTap: () {
-          print("TAP");
-          setState(() => _visible = !_visible);
+      onTap: () {
+        print("TAP");
+        setState(() => _visible = !_visible);
 
-          if (_visible) {
-            print("Visible");
-          }
-          //print(_visible);
-        },
-        child: Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: SlidingAppBar(
-            controller: _controller,
-            visible: _visible,
-            child: AppBar(
-              title: const Text("Maculopathy Simulator Menu"),
-              backgroundColor: Colors.green,
-            )),
-            body: Center(
-              child: Container(
-                //margin: const EdgeInsets.all(100.0),
-                child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
+        if (_visible) {
+          print("Visible");
+        }
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: SlidingAppBar(
+          controller: _controller,
+          visible: _visible,
+          child: AppBar(
+            title: const Text("Maculopathy Simulator Menu"),
+            backgroundColor: Colors.green,
+          )
+        ),
+        body: Center(
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
                   margin: const EdgeInsets.only(top: 80.0),
                   child: Text("Scotoma shape:"),
                 ),
                 Expanded(
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      childAspectRatio: 1.0
-                    ),
+                      crossAxisCount: 4, childAspectRatio: 1.0),
                     itemCount: 24,
                     itemBuilder: (BuildContext context, int index) {
                       final imageUrl = 'assets/Scotoma${(index + 1).toString().padLeft(2, '0')}.png';
@@ -397,7 +407,9 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                           margin: const EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: _selectedImageUrl == imageUrl ? Colors.blue : Colors.transparent,
+                              color: _selectedImageUrl == imageUrl
+                                ? Colors.blue
+                                : Colors.transparent,
                               width: 2.0,
                             ),
                           ),
@@ -410,48 +422,59 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                     },
                   ),
                 ),
-                   Container(
-                    margin: const EdgeInsets.only(top: 80.0),
-                    child: Text('Scotoma Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px')),
-                  Slider(
-                    value: _resolutionValue,
-                    min: 50.0,
-                    max: 400.0,
-                    onChanged: (value) {
-                      setState(() {
-                        _resolutionValue = value;
-                      });
-                    },
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 50.0),
-                    child: Text('Scotoma Opacity: ${_opacityValue.toInt()}%')),
-                  Slider(
-                    value: _opacityValue,
-                    min: 0.0,
-                    max: 100.0,
-
-                    onChanged: (value) {
-                      setState(() {
-                        _opacityValue = value;
-                      });
-                    },
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 50.0, bottom: 50.0),
-                    child: ElevatedButton(
+                Container(
+                  margin: const EdgeInsets.only(top: 80.0),
+                  child: Text(
+                    'Scotoma Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px'
+                  )
+                ),
+                Slider(
+                  value: _resolutionValue,
+                  min: 50.0,
+                  max: 400.0,
+                  onChanged: (value) {
+                    setState(() {
+                      _resolutionValue = value;
+                    });
+                  },
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 50.0),
+                  child: Text(
+                    'Scotoma Opacity: ${_opacityValue.toInt()}%'
+                  )
+                ),
+                Slider(
+                  value: _opacityValue,
+                  min: 0.0,
+                  max: 100.0,
+                  onChanged: (value) {
+                    setState(() {
+                      _opacityValue = value;
+                    });
+                  },
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 50.0, bottom: 50.0),
+                  child: ElevatedButton(
                     child: const Text("Start Simulation"),
                     onPressed: () {
-                      Navigator.pushNamed(
-                        context, 
-                        '/simulator', 
-                        arguments: FromMenuToSimulation(_resolutionValue, _opacityValue, _selectedImageUrl)
+                      Navigator.pushNamed(context, '/simulator',
+                        arguments: FromMenuToSimulation(
+                          _resolutionValue,
+                          _opacityValue,
+                          _selectedImageUrl
+                        )
                       );
-                     }
-                  ))
-                ],
-              ),
-              ))));
+                    }
+                  )
+                )
+              ]
+            )
+          )
+        )
+      )
+    );
   }
 }
 
