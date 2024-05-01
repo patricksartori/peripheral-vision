@@ -103,8 +103,8 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-    _setOrientation(ScreenOrientation.rotating);
-
+    _setOrientation(ScreenOrientation.portraitOnly);
+    _cameraController.dispose();
     super.dispose();
   }
 
@@ -149,9 +149,9 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
                           opacity: args.opacity/100,
                           child:
                           Image.asset(
-                            'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
-                            width: args.resolution, // Larghezza dell'immagine per la prima preview
-                            height: args.resolution // Altezza dell'immagine per la prima preview
+                            args.imageUrl,
+                            width: args.resolution,
+                            height: args.resolution 
                           )
                         ),
                       ],
@@ -172,9 +172,9 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
                           opacity: args.opacity/100,
                           child:
                           Image.asset(
-                            'assets/black_blurred.png', // Percorso dell'immagine per la prima preview
-                            width: args.resolution, // Larghezza dell'immagine per la prima preview
-                            height: args.resolution // Altezza dell'immagine per la prima preview
+                            args.imageUrl,
+                            width: args.resolution,
+                            height: args.resolution
                           )
                         ),
                       ]))
@@ -233,8 +233,8 @@ class _ReadingModeState extends State<ReadingMode>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     _setOrientation(ScreenOrientation.rotating);
-
     super.dispose();
+    _cameraController.dispose();
   }
 
   @override
@@ -324,9 +324,10 @@ class MaculopathySimulatorMenu extends StatefulWidget {
 class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
     with SingleTickerProviderStateMixin {
   bool _visible = true;
-  double _resolutionValue = 0.0;
+  double _resolutionValue = 50.0;
   double _opacityValue = 100.0;
   late final AnimationController _controller;
+  late String _selectedImageUrl = 'assets/Scotoma01.png';
 
   @override
   void initState() {
@@ -338,6 +339,12 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+  }
+
+  @override
+  void dispose() {
+    _setOrientation(ScreenOrientation.rotating);
+    super.dispose();
   }
 
   @override
@@ -367,36 +374,49 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                 child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  /*const Text("Stain shape"),
-                  ElevatedButton(
-                    child: const Text("Choose stain shape"),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Popup Window"),
-                            content: Text("This is a popup window"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Close"),
-                              )
-                            ],
-                          );
-                        }
+                  Container(
+                  margin: const EdgeInsets.only(top: 80.0),
+                  child: Text("Scotoma shape:"),
+                ),
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      childAspectRatio: 1.0
+                    ),
+                    itemCount: 24,
+                    itemBuilder: (BuildContext context, int index) {
+                      final imageUrl = 'assets/Scotoma${(index + 1).toString().padLeft(2, '0')}.png';
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedImageUrl = imageUrl;
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _selectedImageUrl == imageUrl ? Colors.blue : Colors.transparent,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: Image.asset(
+                            imageUrl,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       );
                     },
-                  ),*/
+                  ),
+                ),
                    Container(
-                    margin: const EdgeInsets.only(top: 50.0),
-                    child: Text('Stain Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px')),
+                    margin: const EdgeInsets.only(top: 80.0),
+                    child: Text('Scotoma Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px')),
                   Slider(
                     value: _resolutionValue,
-                    min: 0.0,
-                    max: 300.0,
+                    min: 50.0,
+                    max: 400.0,
                     onChanged: (value) {
                       setState(() {
                         _resolutionValue = value;
@@ -405,7 +425,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 50.0),
-                    child: Text('Opacity: ${_opacityValue.toInt()}%')),
+                    child: Text('Scotoma Opacity: ${_opacityValue.toInt()}%')),
                   Slider(
                     value: _opacityValue,
                     min: 0.0,
@@ -418,14 +438,14 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                     },
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 50.0),
+                    margin: EdgeInsets.only(top: 50.0, bottom: 50.0),
                     child: ElevatedButton(
                     child: const Text("Start Simulation"),
                     onPressed: () {
                       Navigator.pushNamed(
                         context, 
                         '/simulator', 
-                        arguments: FromMenuToSimulation(_resolutionValue, _opacityValue)
+                        arguments: FromMenuToSimulation(_resolutionValue, _opacityValue, _selectedImageUrl)
                       );
                      }
                   ))
@@ -496,6 +516,7 @@ class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
 class FromMenuToSimulation {
   final double resolution;
   final double opacity;
+  final String imageUrl;
 
-  FromMenuToSimulation(this.resolution, this.opacity);
+  FromMenuToSimulation(this.resolution, this.opacity, this.imageUrl);
 }

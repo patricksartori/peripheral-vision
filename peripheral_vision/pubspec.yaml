@@ -62,7 +62,31 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/black_blurred.png
+    - assets/Scotoma01.png
+    - assets/Scotoma02.png
+    - assets/Scotoma03.png
+    - assets/Scotoma04.png
+    - assets/Scotoma05.png
+    - assets/Scotoma06.png
+    - assets/Scotoma07.png
+    - assets/Scotoma08.png
+    - assets/Scotoma09.png
+    - assets/Scotoma10.png
+    - assets/Scotoma11.png
+    - assets/Scotoma12.png
+    - assets/Scotoma13.png
+    - assets/Scotoma14.png
+    - assets/Scotoma14.png
+    - assets/Scotoma15.png
+    - assets/Scotoma16.png
+    - assets/Scotoma17.png
+    - assets/Scotoma18.png
+    - assets/Scotoma19.png
+    - assets/Scotoma20.png
+    - assets/Scotoma21.png
+    - assets/Scotoma22.png
+    - assets/Scotoma23.png
+    - assets/Scotoma24.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
