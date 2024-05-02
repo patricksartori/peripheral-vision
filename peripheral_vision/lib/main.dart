@@ -126,7 +126,6 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
           )
         ),
         body: SizedBox(
-          height: double.infinity,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center, 
             children: [
@@ -203,7 +202,7 @@ class _ReadingModeState extends State<ReadingMode>
     _cameraController = CameraController(cameras[0], ResolutionPreset.max);
     CameraController(cameras[0], ResolutionPreset.max);
     _cameraController.initialize().then((_) {
-      _cameraController.value.copyWith(previewSize: size);
+    _cameraController.value.copyWith(previewSize: size);
       if (!mounted) {
         return;
       }
@@ -237,93 +236,100 @@ class _ReadingModeState extends State<ReadingMode>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        print("TAP");
-        setState(() => _visible = !_visible);
+Widget build(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      print("TAP");
+      setState(() => _visible = !_visible);
 
-        if (_visible) {
-          print("Visible");
-        }
-      },
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: SlidingAppBar(
-          controller: _controller,
-          visible: _visible,
-          child: AppBar(
-            title: const Text("Reading Mode"),
-            backgroundColor: Colors.green,
-          )
+      if (_visible) {
+        print("Visible");
+      }
+    },
+    child: Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: SlidingAppBar(
+        controller: _controller,
+        visible: _visible,
+        child: AppBar(
+          title: const Text("Reading Mode"),
+          backgroundColor: Colors.green,
         ),
-        body: Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                flex: 15,
-                child: Stack(
-                  alignment: Alignment.center, 
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 195,
-                          width: 400,
-                          child: CameraPreview(_cameraController),
-                        ),
-                        SizedBox(
-                          width: 400,
-                          child: ClipRect(
-                            child: Align(
-                              heightFactor: 0.35,
-                              alignment: Alignment.center,
-                              child: CameraPreview(_cameraController),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            flex: 15,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 195,
+                            width: 400,
+                            child: CameraPreview(_cameraController),
+                          ),
+                          SizedBox(
+                            width: 400,
+                            child: ClipRect(
+                              child: Align(
+                                heightFactor: 0.35,
+                                alignment: Alignment.center,
+                                child: CameraPreview(_cameraController),
+                              ),
                             ),
                           )
-                        )
-                      ]
-                    ),
-                  ]
-                )
-              ),
-              const SizedBox(width: 10),
-              Flexible(
-                flex: 15,
-                child: Stack(
-                  alignment: Alignment.center, 
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 195,
-                          width: 400,
-                          child: CameraPreview(_cameraController),
-                        ),
-                        SizedBox(
-                          width: 400,
-                          child: ClipRect(
-                            child: Align(
-                              heightFactor: 0.35,
-                              alignment: Alignment.center,
-                              child: CameraPreview(_cameraController),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  flex: 1,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 195,
+                            width: 400,
+                            child: CameraPreview(_cameraController),
+                          ),
+                          SizedBox(
+                            width: 400,
+                            child: ClipRect(
+                              child: Align(
+                                heightFactor: 0.35,
+                                alignment: Alignment.center,
+                                child: CameraPreview(_cameraController),
+                              )
                             )
                           )
-                        )
-                      ]
-                    )
-                  ]
+                        ]
+                      )
+                    ]
+                  )
                 )
-              )
-            ]
+              ]
+            )
           )
-        )
+        ]
       )
-    );
-  }
+    )
+  );
+}
+
 }
 
 class MaculopathySimulatorMenu extends StatefulWidget {
