@@ -125,53 +125,55 @@ class _MaculopathySimulator extends State<MaculopathySimulator>
             backgroundColor: Colors.green,
           )
         ),
-        body: SizedBox(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center, 
-            children: [
-              Flexible(
-                flex: 15,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SizedBox(
-                      height: 300,
-                      width: 400,
-                      child: CameraPreview(_cameraController),
-                    ),
-                    Opacity(
-                      opacity: args.opacity / 100,
-                      child: Image.asset(
-                        args.imageUrl,
-                        width: args.resolution,
-                        height: args.resolution
-                      )
-                    ),
-                  ],
+        body: Center(
+          child: SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, 
+              children: [
+                Flexible(
+                  flex: 15,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        height: 300,
+                        width: 400,
+                        child: CameraPreview(_cameraController),
+                      ),
+                      Opacity(
+                        opacity: args.opacity / 100,
+                        child: Image.asset(
+                          args.imageUrl,
+                          width: args.resolution,
+                          height: args.resolution
+                        )
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Flexible(
-                flex: 15,
-                child: Stack(
-                  alignment: Alignment.center, 
-                  children: [
-                    SizedBox(
-                      height: 300,
-                      width: 400,
-                      child: CameraPreview(_cameraController),
-                    ),
-                    Opacity(
-                      opacity: args.opacity / 100,
-                      child: Image.asset(args.imageUrl,
-                        width: args.resolution,
-                        height: args.resolution
-                      )
-                    ),
-                  ]
+                const SizedBox(width: 10),
+                Flexible(
+                  flex: 15,
+                  child: Stack(
+                    alignment: Alignment.center, 
+                    children: [
+                      SizedBox(
+                        height: 300,
+                        width: 400,
+                        child: CameraPreview(_cameraController),
+                      ),
+                      Opacity(
+                        opacity: args.opacity / 100,
+                        child: Image.asset(args.imageUrl,
+                          width: args.resolution,
+                          height: args.resolution
+                        )
+                      ),
+                    ]
+                  )
                 )
-              )
-            ]
+              ]
+            )
           )
         )
       )
@@ -394,7 +396,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  margin: const EdgeInsets.only(top: 80.0),
+                  margin: const EdgeInsets.only(top: 50.0),
                   child: const Text("Scotoma shape:"),
                 ),
                 Expanded(
@@ -430,7 +432,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 80.0),
+                  margin: const EdgeInsets.only(top: 20.0),
                   child: Text(
                     'Scotoma Size: ${_resolutionValue.toInt()}px \u00d7 ${_resolutionValue.toInt()}px'
                   )
@@ -446,7 +448,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                   },
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 50.0),
+                  margin: const EdgeInsets.only(top: 20.0),
                   child: Text(
                     'Scotoma Opacity: ${_opacityValue.toInt()}%'
                   )
@@ -462,7 +464,7 @@ class _MaculopathySimulatorMenuState extends State<MaculopathySimulatorMenu>
                   },
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 50.0, bottom: 50.0),
+                  margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                   child: ElevatedButton(
                     child: const Text("Start Simulation"),
                     onPressed: () {
